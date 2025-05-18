@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <!--navigasyon çubuğu için olanlar-->
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="Profil" />
+        <item
+            android:id="@+id/nav_new_request"
+            android:icon="@drawable/ic_add"
+            android:title="Yeni Talep" />
+        <item
+            android:id="@+id/nav_sender"
+            android:icon="@drawable/ic_sender"
+            android:title="Gönderici" />
+        <item
+            android:id="@+id/nav_my_requests"
+            android:icon="@drawable/ic_list"
+            android:title="Taleplerim" />
+
+    </menu>

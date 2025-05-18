@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:background="#FAFAFA"
+    android:layout_marginBottom="8dp">
+
+    <LinearLayout
+        android:id="@+id/layoutInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Kategori ve İhtiyaç bilgisi yatay -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/textViewCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kategori"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginEnd="16dp"/>
+
+            <TextView
+                android:id="@+id/textViewItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="İhtiyaç"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <!-- Adres bilgileri yatay -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:weightSum="6">
+
+            <TextView
+                android:id="@+id/textViewProvince"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="İl" />
+
+            <TextView
+                android:id="@+id/textViewDistrict"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="İlçe" />
+
+            <TextView
+                android:id="@+id/textViewNeighborhood"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mahalle" />
+
+            <TextView
+                android:id="@+id/textViewStreet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sokak" />
+
+            <TextView
+                android:id="@+id/textViewBuildingInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bina" />
+
+            <TextView
+                android:id="@+id/textViewStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Durum" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Teslim Et butonu sağda yer alır -->
+    <Button
+        android:id="@+id/buttonTeslimAldim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teslim Aldım"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/layoutInfo"
+        android:layout_marginTop="8dp"/>
+</RelativeLayout>
