@@ -86,17 +86,44 @@ public class SecondActivity extends AppCompatActivity {
     private void saveUserToSupabase() {
         Log.d("SecondActivity", "saveUserToSupabase başladı");
 
+
         String name = editTextName.getText().toString().trim();
         String surname = editTextSurname.getText().toString().trim();
         String gender = genderSpinner.getSelectedItem().toString();
-        int day = Integer.parseInt(editTextDay.getText().toString().trim());
-        int month = Integer.parseInt(editTextMonth.getText().toString().trim());
-        int year = Integer.parseInt(editTextYear.getText().toString().trim());
 
-        Log.d("SecondActivity", "EditText değerleri alındı");
+        // Text alanları boş mu?
+        if (name.isEmpty()) {
+            editTextName.setError("İsim boş bırakılamaz");
+            return;
+        }
+        if (surname.isEmpty()) {
+            editTextSurname.setError("Soyisim boş bırakılamaz");
+            return;
+        }
 
+        int day, month, year;
+        try {
+            day = Integer.parseInt(editTextDay.getText().toString().trim());
+            month = Integer.parseInt(editTextMonth.getText().toString().trim());
+            year = Integer.parseInt(editTextYear.getText().toString().trim());
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Doğum tarihi boş bırakılamaz!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-
+        // Gün, ay ve yıl değerleri geçerli mi?
+        if (day < 1 || day > 31) {
+            editTextDay.setError("Gün 1 ile 31 arasında olmalıdır");
+            return;
+        }
+        if (month < 1 || month > 12) {
+            editTextMonth.setError("Ay 1 ile 12 arasında olmalıdır");
+            return;
+        }
+        if (year < 1900 || year > 2025) {
+            editTextYear.setError("Yıl 1900 ile 2025 arasında olmalıdır");
+            return;
+        }
         CheckBox checkKvkk = findViewById(R.id.checkKvkk);
         if (!checkKvkk.isChecked()) {
             Toast.makeText(this, "KVKK onayını kabul etmeniz gerekmektedir!", Toast.LENGTH_SHORT).show();
@@ -106,7 +133,6 @@ public class SecondActivity extends AppCompatActivity {
 
         Log.d("SecondActivity", "Veriler kontrol edildi, JSON hazırlanıyor");
 
-        //String username = "905555000000"; // Şimdilik manuel olarak sabit
 
         UserModel updatedUser = new UserModel();
         updatedUser.setName(name);
@@ -152,6 +178,6 @@ public class SecondActivity extends AppCompatActivity {
                 Toast.makeText(SecondActivity.this, "Sunucu hatası: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }//
+    }
 }
 

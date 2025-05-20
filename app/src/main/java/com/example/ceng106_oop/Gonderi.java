@@ -2,8 +2,8 @@ package com.example.ceng106_oop;
 
 public class Gonderi {
     private String id;
-    private String sender_id;
     private String category;
+    private String sender_id;
     private String item;
     private String province;
     private String district;
@@ -13,16 +13,19 @@ public class Gonderi {
     private String status;
 
     // Getter ve setter'lar
+
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getUser_id() { return sender_id; }
     public void setUser_id(String sender_id) { this.sender_id = sender_id; }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
 
     public String getItem() { return item; }
     public void setItem(String item) { this.item = item; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
     public String getProvince() { return province; }
     public void setProvince(String province) { this.province = province; }

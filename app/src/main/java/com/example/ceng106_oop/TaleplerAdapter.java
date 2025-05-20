@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ceng106_oop.R;
@@ -25,6 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TaleplerAdapter extends RecyclerView.Adapter<TaleplerAdapter.ViewHolder> {
+    //Adapter içinde kullanılacak context (UI için) ve gösterilecek Talep nesnelerinin listesi.
     private Context context;
     private List<Talep> talepList;
 
@@ -37,6 +39,7 @@ public class TaleplerAdapter extends RecyclerView.Adapter<TaleplerAdapter.ViewHo
         TextView tvCategory, tvItem, tvProvince, tvDistrict, tvNeighborhood, tvStreet, tvBuildingInfo, tvStatus;
         Button btnTeslimAldim;
 
+        //Görünümler XML'den bağlanıyor
         public ViewHolder(View itemView) {
             super(itemView);
             tvCategory = itemView.findViewById(R.id.textViewCategory);
@@ -51,17 +54,21 @@ public class TaleplerAdapter extends RecyclerView.Adapter<TaleplerAdapter.ViewHo
         }
     }
 
+    //Görünüm oluşturuluyor, xml dosyasındaki tasarım java nesnesine dönüştürülüyor
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_talep, parent, false);
         return new ViewHolder(view);
     }
+    // ViewHolder oluşturulan kartın içindeki tüm TextView, Button gibi öğelere erişmeyi sağlar
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        //Liste içindeki Talep verisi alınıyor
         Talep talep = talepList.get(position);
 
+        //Tüm TextView'lara Talep içeriği yazılıyor
         holder.tvCategory.setText("Kategori: " + talep.getCategory());
         holder.tvItem.setText("İhtiyaç: " + talep.getItem());
         holder.tvProvince.setText("İl: " + talep.getProvince());
@@ -72,29 +79,39 @@ public class TaleplerAdapter extends RecyclerView.Adapter<TaleplerAdapter.ViewHo
         holder.tvStatus.setText("Durum: " + talep.getStatus());
 
         // Teslim Edildi kontrolü
-        if ("Teslim Alındı".equalsIgnoreCase(talep.getStatus())) {
-            holder.btnTeslimAldim.setEnabled(false);
-            holder.btnTeslimAldim.setText("Teslim Alındı");
-        } else {
+        //Talep daha önce teslim alınmışsa buton pasif hale getiriliyor
+        if ("yolda".equalsIgnoreCase(talep.getStatus())) {
             holder.btnTeslimAldim.setEnabled(true);
             holder.btnTeslimAldim.setText("Teslim Aldım");
+        } else if ("teslim alındı".equalsIgnoreCase(talep.getStatus())) {
+            holder.btnTeslimAldim.setEnabled(false);
+            holder.btnTeslimAldim.setText("Teslim Alındı");
+        } else { // beklemede durumu
+            holder.btnTeslimAldim.setEnabled(false);
+            holder.btnTeslimAldim.setText("Teslim Aldım");
+            holder.btnTeslimAldim.setBackgroundColor(ContextCompat.getColor(context, R.color.button_waiting));
         }
+
+        //Buton tıklanma olayı
         holder.btnTeslimAldim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uuid = talep.getId();  // UUID burada hazır
+                String uuid = talep.getId();  // Supabase'de güncellenecek kaydı seçmek için ID alınıyr
                 String queryParam  = "eq." + uuid;
                 Log.d("TaleplerAdapter", "Güncellenecek Talep UUID: " + uuid);
 
                 Map<String, Object> updateMap = new HashMap<>();
                 updateMap.put("status", "Teslim Alındı");
 
+                //Supabase'e Retrofit servisi üzerinden bağlanılıyor
                 SupabaseServiceforTakip service = SupabaseClient
                         .getClient()
                         .create(SupabaseServiceforTakip.class);
 
+                //Veri güncelleme çağrısı yapılıyor
                 Call<Void> call = service.updateTalepDurum(queryParam , updateMap);
                 call.enqueue(new Callback<Void>() {
+                    //Güncelleme başarılıysa durumu güncelleniyor
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         Log.d("TaleplerAdapter", "Response Code: " + response.code());

@@ -70,16 +70,39 @@ public class UpdateInfoActivity extends AppCompatActivity {
 
 // Kaydet butonuna tıklama işlemi
         saveButton.setOnClickListener(v -> {
-            // Yeni bilgileri al
+            // EditText'lerden verileri al
             String updatedName = editTextName.getText().toString().trim();
             String updatedSurname = editTextSurname.getText().toString().trim();
-            int updatedDay = Integer.parseInt(editTextDay.getText().toString().trim());
-            int updatedMonth = Integer.parseInt(editTextMonth.getText().toString().trim());
-            int updatedYear = Integer.parseInt(editTextYear.getText().toString().trim());
-            String updatedGender = genderSpinner.getSelectedItem().toString();
+            String dayStr = editTextDay.getText().toString().trim();
+            String monthStr = editTextMonth.getText().toString().trim();
+            String yearStr = editTextYear.getText().toString().trim();
 
-            String username = getIntent().getStringExtra("username"); // Profile'den gelen
-            // Log ekleyelim: verileri kontrol edelim
+            // Alanlar boş mu kontrol et
+            if (updatedName.isEmpty() || updatedSurname.isEmpty() ||
+                    dayStr.isEmpty() || monthStr.isEmpty() || yearStr.isEmpty()) {
+                Toast.makeText(UpdateInfoActivity.this, "Lütfen tüm alanları doldurun.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Doğum tarihi girişlerinin sayısal ve geçerli olduğundan emin ol
+            int updatedDay, updatedMonth, updatedYear;
+            try {
+                updatedDay = Integer.parseInt(dayStr);
+                updatedMonth = Integer.parseInt(monthStr);
+                updatedYear = Integer.parseInt(yearStr);
+
+                if (updatedDay < 1 || updatedDay > 31 || updatedMonth < 1 || updatedMonth > 12 || updatedYear < 1900) {
+                    Toast.makeText(UpdateInfoActivity.this, "Geçerli bir doğum tarihi giriniz.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(UpdateInfoActivity.this, "Doğum tarihi sadece sayı olmalıdır.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String updatedGender = genderSpinner.getSelectedItem().toString();
+            String username = getIntent().getStringExtra("username");
+
             Log.d("UpdateInfoActivity", "Updated Data: " +
                     "Username:" + username +
                     "  Name: " + updatedName +
@@ -88,8 +111,10 @@ public class UpdateInfoActivity extends AppCompatActivity {
                     ", Month: " + updatedMonth +
                     ", Year: " + updatedYear +
                     ", Gender: " + updatedGender);
+
             updateUserInfoOnSupabase(username, updatedName, updatedSurname, updatedGender, updatedDay, updatedMonth, updatedYear);
         });
+
 
     }
 
@@ -165,4 +190,4 @@ public class UpdateInfoActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(request);
     }
-  }
+}

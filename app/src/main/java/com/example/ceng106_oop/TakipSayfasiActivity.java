@@ -34,6 +34,7 @@ import retrofit2.Response;
 public class TakipSayfasiActivity extends AppCompatActivity {
 
     private RecyclerView taleplerRecyclerView;
+
     private RecyclerView gonderilerRecyclerView;
 
     private TaleplerAdapter taleplerAdapter;
@@ -42,6 +43,7 @@ public class TakipSayfasiActivity extends AppCompatActivity {
     private final List<Talep> talepList = new ArrayList<>();
     private final List<Gonderi> gonderiList = new ArrayList<>();
 
+    //UI ve diğer işlemler başlatılıyor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +61,7 @@ public class TakipSayfasiActivity extends AppCompatActivity {
 
         gonderilerRecyclerView = findViewById(R.id.gonderilerRecyclerView);
         gonderilerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         gonderilerAdapter = new GonderilerAdapter(gonderiList, new GonderilerAdapter.OnGonderiActionListener() {
             @Override
             public void onGonderiTeslimEttim(Gonderi gonderi) {
@@ -68,7 +71,7 @@ public class TakipSayfasiActivity extends AppCompatActivity {
         });
         gonderilerRecyclerView.setAdapter(gonderilerAdapter);
 
-        // Kullanıcı kimliğini al
+        // Kullanıcının user_id bilgisini kalıcı hafızadan (SharedPreferences) çekiliyor
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String userId = prefs.getString("user_id", null);
 
@@ -79,13 +82,18 @@ public class TakipSayfasiActivity extends AppCompatActivity {
         }
     }
 
+    //Verileri kullanıcıya özel filtreyle çekmek için yardımcı metot
     private void fetchFilteredData(String userId) {
+        //Retrofit aracılığıyla API servisi oluşturuluyor
         SupabaseServiceforTakip service = SupabaseClient.getClient().create(SupabaseServiceforTakip.class);
-        String filter = "eq." + userId;
+        String filter = "eq." + userId;    //Supabase API çağrıları için userId’ye göre filtreleme ifadesi
         service.getTalepler(filter);
         service.getGonderiler(filter);
 
 
+        //Talepler (istekler) API çağrısı yapılıyor
+        //Başarılı ise, önce liste temizlenip, gelen veriler ekleniyor
+        //Adapter güncellenerek RecyclerView içeriği yenileniyor
         service.getTalepler(filter).enqueue(new Callback<List<Talep>>() {
             @Override
             public void onResponse(Call<List<Talep>> call, Response<List<Talep>> response) {
