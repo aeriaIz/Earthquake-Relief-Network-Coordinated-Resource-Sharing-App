@@ -5,6 +5,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
+// Bu Interface, Retrofit kütüphanesi üzerinden Supabase REST API’ye ihtiyaç verilerini POST etmek için kullanılır.
 public interface SupabaseServiceForNeeds {
 
     @Headers({
@@ -14,5 +15,6 @@ public interface SupabaseServiceForNeeds {
             "Prefer: return=minimal"
     })
     @POST("needs")
+    //addNeed(@Body Needs need) metodu ile Needs nesnesi JSON formatında API'ye gönderilir.
     Call<Void> addNeed(@Body Needs need);
 }

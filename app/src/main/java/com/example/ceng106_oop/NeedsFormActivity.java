@@ -1,6 +1,5 @@
 package com.example.ceng106_oop;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -14,8 +13,6 @@ import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -134,13 +131,16 @@ public class NeedsFormActivity extends AppCompatActivity {
             newNeed.setBuilding_info(building);
             newNeed.setStatus("beklemede");
 
+            // Retrofit ile Supabase API’ye bağlantı hazırlanır
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://dcolkghkjgbriquchvza.supabase.co/rest/v1/") // ← BURAYI KENDİ PROJENE GÖRE DÜZENLE
+                    .baseUrl("https://dcolkghkjgbriquchvza.supabase.co/rest/v1/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
+            // API servisi oluşturulur
             SupabaseServiceForNeeds service = retrofit.create(SupabaseServiceForNeeds.class);
 
+            // API'ye POST isteği gönderilir
             service.addNeed(newNeed).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
@@ -148,7 +148,7 @@ public class NeedsFormActivity extends AppCompatActivity {
                     btnSave.setText("Kaydet");
                     if (response.isSuccessful()) {
                         Toast.makeText(NeedsFormActivity.this, "Başarıyla gönderildi!", Toast.LENGTH_SHORT).show();
-                        // Formu temizle
+                        // Eğer istek başarılıysa form temizlenir
                         autoCategory.setText("");
                         autoItem.setText("");
                         editProvince.setText("");
@@ -156,7 +156,8 @@ public class NeedsFormActivity extends AppCompatActivity {
                         editNeighborhood.setText("");
                         editStreet.setText("");
                         editBuilding.setText("");
-                        autoItem.setAdapter(null); // Kategori sıfırlanınca item’lar da sıfırlansın
+                        // Kategori değiştiğinde item listesi de temizlenir
+                        autoItem.setAdapter(null);
                     } else {
                         Toast.makeText(NeedsFormActivity.this, "Sunucu hatası: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
@@ -173,16 +174,19 @@ public class NeedsFormActivity extends AppCompatActivity {
     }
 
     private void setupDropdowns() {
+        // Kategorilere karşılık gelen ürün listeleri eşleştirilir
         itemMap.put("Gıda", Arrays.asList("Su", "Konserve", "Kuru Gıda", "Bebek Maması"));
         itemMap.put("Kıyafet", Arrays.asList("Mont", "Ayakkabı", "Bebek Kıyafeti"));
         itemMap.put("Hijyen", Arrays.asList("Hijyen Kiti", "Sabun", "Islak Mendil"));
 
+        // Kategori adapter’i hazırlanır ve dropdown’a bağlanır
         List<String> categoryList = new ArrayList<>(itemMap.keySet());
 
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_dropdown_item_1line, categoryList);
         autoCategory.setAdapter(categoryAdapter);
 
+        // Kategori seçildiğinde ilgili ürün listesi dropdown’a yüklenir
         autoCategory.setOnItemClickListener((parent, view, position, id) -> {
             String selectedCategory = parent.getItemAtPosition(position).toString();
             List<String> items = itemMap.get(selectedCategory);
@@ -190,7 +194,7 @@ public class NeedsFormActivity extends AppCompatActivity {
             ArrayAdapter<String> itemAdapter = new ArrayAdapter<>(
                     this, android.R.layout.simple_dropdown_item_1line, items);
             autoItem.setAdapter(itemAdapter);
-            autoItem.setText(""); // önceki seçim temizlensin
+            autoItem.setText(""); // Önceki seçim temizlenir
         });
     }
 }
