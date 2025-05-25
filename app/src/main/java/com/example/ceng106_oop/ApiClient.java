@@ -2,7 +2,7 @@ package com.example.ceng106_oop;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiClient {
+public abstract class ApiClient {
     private static final String BASE_URL = "https://dcolkghkjgbriquchvza.supabase.co/rest/v1/";
     private static Retrofit retrofit = null;
 
